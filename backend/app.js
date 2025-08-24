@@ -2,6 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from "cookie-parser"
 import adminRoutes from "./routes/admin.route.js"
+import userRoutes from "./routes/user.route.js"
+import blogRoutes from './routes/blog.routes.js'
 
 const app = express()
 
@@ -21,5 +23,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/admin", adminRoutes)
+app.use("/api/user", userRoutes)
+app.use("/api/blogs", blogRoutes);
 
 export default app

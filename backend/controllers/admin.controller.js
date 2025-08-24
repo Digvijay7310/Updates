@@ -2,9 +2,10 @@ import { AsyncHandler } from '../utils/AsyncHandler.js'
 import { ApiError } from '../utils/ApiError.js';
 import {ApiResponse} from "../utils/ApiResponse.js"
 import { Admin } from '../models/admin.model.js';
+import { User } from '../models/user.model.js';
+import { Blog } from '../models/blog.model.js';
 import uploadOnCloudinary from "../utils/cloudinary.js"
 import fs from "fs"
-import crypto from "node:crypto"
 
 
 const adminSignup = AsyncHandler(async (req, res, next) => {
@@ -121,6 +122,38 @@ const adminLogin = AsyncHandler(async (req, res, next) => {
     )
 })
 
+// Logout 
+const adminLogout = AsyncHandler(async (req, res) => {
+    const admin = req.user;
+
+
+     // Set isProduction flage based on .env
+     const isProduction = process.env.NODE_ENV === "PRODUCTION";
+
+    if(admin){
+        res.clearCookie("accessToken", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite:  isProduction ? "none" : "lax",
+        });
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? "none" : "lax",
+        });
+        return res.status(201).json(
+            new ApiResponse(201, {
+                _id: admin.id,
+                email: admin.email
+            }, "Admin logout successfully")
+        )
+    } else {
+        return res.status(400).json(
+            new ApiResponse(400, {}, "No admin logged in")
+        )
+    }
+})
+
 // Edit 
 const updateProfile = AsyncHandler(async (req, res) => {
     const adminId = req.user._id;
@@ -168,12 +201,105 @@ const getProfile = AsyncHandler(async (req, res) => {
         new ApiResponse(200, {
             _id: admin._id,
             fullName: admin.fullName,
-            email: admin.fullName,
+            email: admin.email,
             avatar: admin.avatar
         }, "Profile fetched successfully")
     )
 })
 
+// Create a Blog by admin
+const createBlog = AsyncHandler(async (req, res) => {
+    const {title, content} = req.body;
+    const admin = req.user;
+
+    if(!title || !content){
+        throw new ApiError(400, "Title and content are required");
+    }
+
+    const newBlog = await Blog.create({
+        title,
+        content,
+        author: admin._id,
+        authorModel: "Admin"
+    })
+
+    return res.status(201).json(
+        new ApiResponse(201, newBlog, "Blog created successfully")
+    );
+})
+
+// Get all users 
+const getAllUsers = AsyncHandler(async (req, res) => {
+    const users = await User.find().select("-password");
+
+    return res.status(200).json(
+        new ApiResponse(200, users, "All users fetched successfully")
+    )
+})
+
+const getSingleUser = AsyncHandler(async (req, res) => {
+    const {id} = req.params;
+    const user = await User.findById(id).select("-password");
+
+    if(!user){
+        throw new ApiError(404, "User not found");
+    }
+    return res.status(200).json(
+        new ApiResponse(200, user, "User fetched successfully")
+    );
+});
+
+// Block user
+const blockUser = AsyncHandler(async (req, res) => {
+    const {id} = req.params;
+
+    const user  = await User.findById(id);
+    if(!user) throw new ApiError(404, "User not found");
+
+    if(user.isBlocked) {
+        throw new ApiError(400, "User is already blocked");
+    }
+
+    user.isBlocked = true;
+    await user.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "User blocked successfully")
+    );
+});
+
+// UnBlocked user 
+const unblockUser = AsyncHandler(async (req, res) => {
+    const {id} = req.params;
+
+    const user = await User.findById(id);
+    if(!user) throw new ApiError(404, "User not found");
+
+    if(!user.isBlocked){
+        throw new ApiError(400, "User is not blocked");
+    }
+
+    user.isBlocked = false;
+    await user.save();
+
+    return res.status(200).json(
+        new ApiResponse(200, {}, "User unblocked successfully")
+    )
+})
+
+const deleteUser = AsyncHandler(async (req, res) => {
+    const {id} = req.params;
+
+    const user = await User.findById(id);
+    if(!user) throw new ApiError(404, "User not found");
+
+    await user.deleteOne();
+    return res.status(200).json(
+        new ApiResponse(200, {}, "User deleted successfully")
+    )
+})
+
+/*
 // Forgot Password
 // Token generator
 const generateResetToken = () => {
@@ -233,5 +359,8 @@ const resetPassword = AsyncHandler(async (req, res) => {
         new ApiResponse(201, null, "Password reset successfully")
     )
 })
-export {adminSignup, adminLogin, updateProfile,
- getProfile, forgotPassword, resetPassword}
+    */
+export {adminSignup, adminLogin, adminLogout,
+ updateProfile, getProfile, getAllUsers,
+  getSingleUser, blockUser, unblockUser,
+   deleteUser }
