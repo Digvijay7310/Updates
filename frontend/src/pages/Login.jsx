@@ -1,20 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance.js'
+import { toast } from 'react-toastify';
 
 function Login() {
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async(e) => {
         e.preventDefault();
         const email = e.target.email.value;
-        const password = e.targer.password.value;
+        const password = e.target.password.value;
         console.log("Loggig in with: ", email, password);
+
+        try {
+            const res = await axiosInstance.post("/user/login", {email, password})
+            console.log("Login successful", res?.data?.message)
+            toast.success("Login successfull");
+
+            navigate("/")
+        } catch (error) {
+            console.error("Login failed");
+            setError(error.response?.data?.message || "login failed: ", error)
+            toast.error(error.message || "Login failed")
+        }
     };
 
     useEffect(() => {
         document.title = "Login | GETUPDATES"
-    })
+    }, [])
 
   return (
     <section>

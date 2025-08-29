@@ -5,8 +5,14 @@ function BlogList({blogs}) {
   return (
     <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4'>
         {
-            blogs.map((blog, index) => (
-                <BlogCard key={index} heading={blog.heading} description={blog.description} />
+            blogs.map((blog) => (
+                <BlogCard
+                 key={blog._id}
+                heading={blog.title}
+                 description={blog.content} 
+                id={blog._id}
+                image={blog.images?.[0]} 
+                />
             ))
         }
     </div>
