@@ -11,7 +11,7 @@ router.route("/:id").get(getBlogById)
 
 // Authenticated
 router.route("/").post(verifyJWT, upload.array("images", 10), createBlog);
-router.route("/:id/edit").put(verifyJWT, updateBlog)
+router.route("/:id/edit").put(verifyJWT, upload.array("images", 10), updateBlog)
 router.route("/:id").delete(verifyJWT, deleteBlog)
 
 export default router;

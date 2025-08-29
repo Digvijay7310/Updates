@@ -35,7 +35,7 @@ const createBlog = AsyncHandler(async(req, res)=> {
 });
 
 // Get all blogs 
-const getAllBlogs = AsyncHandler(async (req,res)=> {
+const getAllBlogs = AsyncHandler(async (req, res)=> {
     const blogs = await Blog.find({isPublished: true}).sort({createdAt: -1}).populate("author", "fullName username avatar");
 
     return res.status(200).json(
@@ -43,6 +43,7 @@ const getAllBlogs = AsyncHandler(async (req,res)=> {
     )
 });
 
+// Get an blog
 const getBlogById = AsyncHandler(async(req, res) => {
     const blog = await Blog.findById(req.params.id).populate("author", "fullName username avatar");
     
@@ -59,18 +60,24 @@ const updateBlog = AsyncHandler(async(req, res) => {
     if(!blog) throw new ApiError(404, "Blog not found");
 
     if(
-        String(blog.author) !== req.user._id.toString() ||
-     blog.authorModel !== req.userModel
-    )
-    {
-        throw new ApiError(403, "Unauthorized")
-    }
+        !blog.author.equals(req.user._id) || 
+        blog.authorModel !== req.userModel
+     ) {
+        throw new ApiError(403, "Unauthorized");
+     }
 
     const {title, content, isPublished} = req.body;
 
-    if(title) blog.title = title;
-    if(content) blog.content = content;
-    if(isPublished !== undefined) blog.isPublished = isPublished;
+    let removeImages = req.body.removeImages || [];
+    if(typeof removeImages === "string"){
+        removeImages = [removeImages];
+    }
+
+    if(title !== undefined) blog.title = title;
+    if(content !== undefined) blog.content = content;
+    if(isPublished !== undefined){
+         blog.isPublished = isPublished === "true" || isPublished === true;
+        }
 
     await blog.save()
 
@@ -81,15 +88,28 @@ const updateBlog = AsyncHandler(async(req, res) => {
 
 })
 
+// Delete an blog
 const deleteBlog = AsyncHandler(async(req, res) => {
     const blog = await Blog.findById(req.params.id)
     if(!blog) throw new ApiError(404, "Blog not found");
 
-    if(String(blog.author) !== req.user._id.toString() || blog.authorModel !== req.user.model){
+    // If admin, allow delete
+    if(req.userModel === "Admin"){
+        await blog.deleteOne()
+        return res.status(200).json(
+            new ApiResponse(200 ,{}, "Blog deleted by admin")
+        )
+    }
+
+    // If user, allow only if owner
+
+    if(String(blog.author) !== req.user._id.toString() ||
+     blog.authorModel !== req.userModel
+    ){
         throw new ApiError(403, "Unauthorized");
     }
 
-    await blog.remove();
+    await blog.deleteOne();
 
     return res.status(200).json(
         new ApiResponse(200, {}, "Blog deleted")
