@@ -40,7 +40,7 @@ function EditBlog() {
         newImages.forEach((image) => formData.append("images", image));
 
         try {
-            const res = await axiosInstance.put(`/blogs.${id}/edit`, formData);
+            const res = await axiosInstance.put(`/blogs/${id}/edit`, formData);
             toast.success("Blog Updated successfully")
             navigate(`/blogs/${id}`);
         } catch (error) {

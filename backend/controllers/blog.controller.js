@@ -63,7 +63,7 @@ const updateBlog = AsyncHandler(async(req, res) => {
         !blog.author.equals(req.user._id) || 
         blog.authorModel !== req.userModel
      ) {
-        throw new ApiError(403, "Unauthorized");
+        throw new ApiError(403, "Unauthorized: You are not the owner of this blog");
      }
 
     const {title, content, isPublished} = req.body;

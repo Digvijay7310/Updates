@@ -7,6 +7,10 @@ import NotFound from '../pages/NotFound'
 import CreateBlog from '../pages/CreateBlog'
 import BlogDetails from '../pages/BlogDetails'
 import EditBlog from '../pages/EditBlog'
+import Profile from '../pages/Profile'
+import AdminDashboard from '../pages/AdminDashboard'
+import ManageUsers from '../pages/ManageUsers'
+import AdminProfile from '../pages/AdminProfile'
 
 function AppRoutes() {
   return (
@@ -17,6 +21,10 @@ function AppRoutes() {
         <Route path='/create-blog' element={<CreateBlog />} />
         <Route path='/blogs/:id' element={<BlogDetails />} />
         <Route path='/blogs/:id/edit' element={<EditBlog />} />
+        <Route path='/user-profile' element={<Profile />} />
+        <Route path='/admin-dashboard' element={<AdminDashboard/>} />
+        <Route path='/admin/users' element={<ManageUsers/>} />
+        <Route path='/admin/profile' element={<AdminProfile/>} />
         <Route path='*' element={<NotFound />} />
     </Routes>
   )
