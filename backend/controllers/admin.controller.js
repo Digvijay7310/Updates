@@ -207,27 +207,6 @@ const getProfile = AsyncHandler(async (req, res) => {
     )
 })
 
-// Create a Blog by admin
-const createBlog = AsyncHandler(async (req, res) => {
-    const {title, content} = req.body;
-    const admin = req.user;
-
-    if(!title || !content){
-        throw new ApiError(400, "Title and content are required");
-    }
-
-    const newBlog = await Blog.create({
-        title,
-        content,
-        author: admin._id,
-        authorModel: "Admin"
-    })
-
-    return res.status(201).json(
-        new ApiResponse(201, newBlog, "Blog created successfully")
-    );
-})
-
 // Get all users 
 const getAllUsers = AsyncHandler(async (req, res) => {
     const users = await User.find().select("-password");
@@ -299,67 +278,7 @@ const deleteUser = AsyncHandler(async (req, res) => {
     )
 })
 
-/*
-// Forgot Password
-// Token generator
-const generateResetToken = () => {
-    return crypto.randomBytes(32).toString("hex");
-};
 
-const forgotPassword = AsyncHandler(async(req, res) => {
-    const {email} = req.body;
-
-    if(!email) throw new ApiError(401, "Email is required");
-
-    const admin = await Admin.findOne({email})
-    if(!admin) throw new ApiError(404, "Admin not found");
-
-    // Generate token
-    const resetToken = generateResetToken();
-    const expiry = Date.now() + 1000 * 60 * 10
-
-    admin.resetPasswordToken = resetToken;
-    admin.resetPasswordExpiry = expiry;
-
-    await admin.save();
-    // Here we can add the resetToken via email
-    // For now just respond with it 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`
-
-    return res.status(200).json(
-        new ApiResponse(201, {resetLink}, "Reset Link sent")
-    )
-})
-
-// reset Password
-const resetPassword = AsyncHandler(async (req, res) => {
-    const {token} = req.params;
-    const {newPassword} = req.body;
-
-    if(!token || !newPassword){
-        throw new ApiError(401, "Token and new password are required");
-    }
-
-    const admin = await Admin.findOne({
-        resetPasswordToken: token,
-        resetPasswordExpiry: { $gt: Date.now()}
-    });
-
-    if(!admin){
-        throw new ApiError(401, "Invalid or expired token")
-    }
-
-    admin.password = newPassword;
-    admin.resetPasswordToken = undefined;
-    admin.resetPasswordExpiry = undefined;
-
-    await admin.save()
-
-    return res.status(200).json(
-        new ApiResponse(201, null, "Password reset successfully")
-    )
-})
-    */
 export {adminSignup, adminLogin, adminLogout,
  updateProfile, getProfile, getAllUsers,
   getSingleUser, blockUser, unblockUser,

@@ -32,12 +32,10 @@ function BlogCard({ heading, description, id, image }) {
               dummyImage
             }
             alt="blog"
-            className="w-full h-48 object-cover transition-transform duration-300 hover:scale-95"
+            className="w-full h-48 md:w-[500px] object-cover transition-transform duration-300 hover:scale-95"
           />
         </div>
 
-        {/* Gradient Overlay (Optional for style) */}
-        {/* <div className="absolute inset-0 bg-gradient-to-t from-white via-white/70 to-transparent"></div> */}
 
         {/* Content */}
         <div className="p-4">
