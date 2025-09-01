@@ -41,7 +41,7 @@ function Profile() {
     };
 
     const handleAvatarChange = (e) => {
-        const file = e.target.file[0];
+        const file = e.target.files[0];
         setFormData(prev => ({
             ...prev, 
             avatar: file,

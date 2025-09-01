@@ -1,5 +1,5 @@
 import express from 'express'
-import { createBlog, deleteBlog, getAllBlogs, getBlogById, updateBlog } from '../controllers/blog.controller.js'
+import { createBlog, deleteBlog, getAllBlogs, getBlogById, searchBlogs, updateBlog } from '../controllers/blog.controller.js'
 import { verifyJWT } from '../middlewares/auth.middleware.js'
 import { upload } from '../middlewares/multer.middleware.js'
 
@@ -13,5 +13,7 @@ router.route("/:id").get(getBlogById)
 router.route("/").post(verifyJWT, upload.array("images", 10), createBlog);
 router.route("/:id/edit").put(verifyJWT, upload.array("images", 10), updateBlog)
 router.route("/:id").delete(verifyJWT, deleteBlog)
+
+router.route("/search").get(searchBlogs)
 
 export default router;

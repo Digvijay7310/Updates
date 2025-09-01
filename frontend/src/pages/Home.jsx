@@ -57,7 +57,7 @@ function Home() {
   return (
     <section className="container mx-auto">
      
-        <h2 className='text-2xl font-semibold mb-4'>Latest Blogs</h2>
+        <h2 className='text-2xl font-semibold text-center'>Latest Blogs</h2>
         {
           loading ? (<Loading/>) : blogs.length === 0 ? (
             <p className='text-center text-gray-500'> There is no blogs</p>

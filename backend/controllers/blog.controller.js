@@ -117,5 +117,31 @@ const deleteBlog = AsyncHandler(async(req, res) => {
 })
 
 
+ const searchBlogs = AsyncHandler(async(req, res, next) => {
+    try {
+    const { q } = req.query;
+    if (!q || q.trim() === '') {
+      return res.status(400).json(new ApiResponse(400, null, "Search query is required"));
+    }
+
+    const regex = new RegExp(q.trim(), 'i'); // case-insensitive
+
+    // populate author data for display if needed
+    const blogs = await Blog.find({
+      isPublished: true,
+      $or: [
+        { title: regex },
+        { content: regex },
+      ]
+    })
+    .populate('author', 'fullName username email') // adjust fields as needed
+    .limit(50);
+
+    res.status(200).json(new ApiResponse(200, blogs, "Search results"));
+  } catch (error) {
+    next(error);
+  }
+ })
+
 export {createBlog, getAllBlogs, updateBlog,
- deleteBlog, getBlogById}
+ deleteBlog, getBlogById, searchBlogs}
