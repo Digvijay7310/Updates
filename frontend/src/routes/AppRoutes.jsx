@@ -1,24 +1,29 @@
-import React from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Home from '../pages/Home'
-import Login from '../pages/Login'
-import Register from '../pages/Register'
-import NotFound from '../pages/NotFound'
-import CreateBlog from '../pages/CreateBlog'
-import BlogDetails from '../pages/BlogDetails'
-import EditBlog from '../pages/EditBlog'
-import Profile from '../pages/Profile'
-import AdminDashboard from '../pages/AdminDashboard'
-import AdminProfile from '../pages/AdminProfile'
-import UserProfileUpdate from '../pages/UserProfileUpdate'
-import Layout from '../layout/Layout'
-import AdminLogin from '../pages/AdminLogin'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import Register from '../pages/Register';
+import NotFound from '../pages/NotFound';
+import CreateBlog from '../pages/CreateBlog';
+import BlogDetails from '../pages/BlogDetails';
+import EditBlog from '../pages/EditBlog';
+import Profile from '../pages/Profile';
+import UserProfileUpdate from '../pages/UserProfileUpdate';
+import Layout from '../layout/Layout';
+
+import AdminRegister from '../pages/admin/AdminRegister';
+import AdminDashboard from '../pages/admin/AdminDashboard';
+import AdminEditProfile from '../pages/admin/AdminEditProfile';
+import AdminLogin from '../pages/admin/AdminLogin';
+import AdminProfile from '../pages/admin/AdminProfile';
+import SingleUser from '../pages/admin/SingleUser';
+import AdminLayout from '../Layout/AdminLayout';
 
 function AppRoutes() {
   return (
     <Routes>
-      {/* ✅ Main layout wrapper */}
+      {/* Main User Routes wrapped in Layout */}
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
@@ -28,20 +33,22 @@ function AppRoutes() {
         <Route path="blogs/:id/edit" element={<EditBlog />} />
         <Route path="user-profile" element={<Profile />} />
         <Route path="user-profile-update" element={<UserProfileUpdate />} />
-        <Route path='admin-login' element={<AdminLogin />} />
-        <Route path="admin-dashboard" element={<AdminDashboard />} />
-        <Route path="admin/profile" element={<AdminProfile />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
-   
-  <Route path="/" element={<Layout />}>
-    {/* ... */}
-  </Route>
-    </Routes>
+      {/* Admin Routes wrapped in AdminLayout */}
+      <Route path="/admin/register" element={<AdminRegister />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
 
-    
-  )
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="dashboard" element={<AdminDashboard />} />
+        <Route path="profile" element={<AdminProfile />} />
+        <Route path="edit-profile" element={<AdminEditProfile />} />
+        <Route path="users/:id" element={<SingleUser />} />
+        {/* Add more admin routes here */}
+      </Route>
+    </Routes>
+  );
 }
 
 export default AppRoutes;

@@ -27,8 +27,9 @@ function Profile() {
           avatar: null,
           avatarPreview: res.data.data.avatar,
         });
+
       } catch (error) {
-        toast.error('Failed to fetch profile');
+        toast.error('Failed to fetch profile', error);
       } finally {
         setLoading(false);
       }
@@ -186,6 +187,8 @@ function Profile() {
           </div>
         </form>
       )}
+
+      <div>{}</div>
     </section>
   );
 }

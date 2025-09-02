@@ -32,10 +32,6 @@ router.route("/users/:id/block").put(verifyJWT, isAdmin, blockUser)
 router.route("/users/:id/unblock").put(verifyJWT, isAdmin, unblockUser)
 router.route("/users/:id").delete(verifyJWT, isAdmin, deleteUser)
 
-/*
-router.route("/forgot-password").post(forgotPassword)
-router.route("/reset-password/:token").post(resetPassword)
-*/
 
 
 export default router;

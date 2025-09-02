@@ -58,34 +58,11 @@ function Home() {
     }
   }, [location.search]);
 
-  // Handles input and redirects to /?search=query
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim() !== '') {
-      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
-    } else {
-      navigate('/');
-    }
-  };
+
 
   return (
     <section className="container mx-auto px-4 py-6 md:px-20">
-      {/* Search Bar */}
-      <form onSubmit={handleSearchSubmit} className="mb-6 flex gap-2 items-center">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search blogs..."
-          className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring focus:border-blue-400"
-        />
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition duration-150"
-        >
-          Search
-        </button>
-      </form>
+
 
       {/* Blog Content */}
       {loading ? (
