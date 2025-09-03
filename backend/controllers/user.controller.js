@@ -103,13 +103,23 @@ const userRegister = AsyncHandler(async(req, res) => {
 
 
  const userLogout = AsyncHandler(async (req, res) => {
-    res.clearCookie("accessToken");
-    res.clearCookie("refreshToken");
+    res.clearCookie("accessToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
+
+    res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    });
 
     return res.status(200).json(
         new ApiResponse(200, {}, "Logged out successfully")
     );
 });
+
 
 
  const getUserProfile = AsyncHandler(async (req, res) => {
