@@ -8,7 +8,7 @@ import blogRoutes from './routes/blog.routes.js'
 const app = express()
 
 app.use(cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: "https://updates-frontend.onrender.com",
     credentials: true
 }))
 
