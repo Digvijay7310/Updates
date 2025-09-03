@@ -10,7 +10,7 @@ import BlogDetails from '../pages/BlogDetails';
 import EditBlog from '../pages/EditBlog';
 import Profile from '../pages/Profile';
 import UserProfileUpdate from '../pages/UserProfileUpdate';
-import Layout from '../layout/Layout';
+import Layout from '../Layout/Layout';
 
 import AdminRegister from '../pages/admin/AdminRegister';
 import AdminDashboard from '../pages/admin/AdminDashboard';
