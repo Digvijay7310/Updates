@@ -7,13 +7,10 @@ import blogRoutes from './routes/blog.routes.js'
 
 const app = express()
 
+
 app.use(cors({
-<<<<<<< HEAD
-    origin: process.env.CORS_ORIGIN || "https://updates-frontend.onrender.com",
-=======
-    origin: "https://updates-frontend.onrender.com",
->>>>>>> 7916dd7b061a0ffca012758f51e3fd93f4075bf6
-    credentials: true
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: true,
 }))
 
 app.use(express.json({limit: "16kb"}))

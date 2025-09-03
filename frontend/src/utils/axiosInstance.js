@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-    baseURL: 'https://updates-backend-6soa.onrender.com/api',
+    baseURL: 'http://localhost:8000/api',
     withCredentials: true,
 })
 

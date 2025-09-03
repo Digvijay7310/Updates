@@ -32,14 +32,14 @@ function BlogCard({ heading, description, id, image }) {
               dummyImage
             }
             alt="blog"
-            className="w-full h-48 md:w-[500px] object-cover transition-transform duration-300 hover:scale-95"
+            className="w-full h-48 md:h-60 md:w-[500px] object-cover transition-transform duration-300 hover:scale-95"
           />
         </div>
 
 
         {/* Content */}
         <div className="p-4">
-          <h4 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-2">
+          <h4 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-1">
             {heading}
           </h4>
           <p className="text-sm text-gray-600 line-clamp-3">
