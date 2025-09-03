@@ -13,7 +13,7 @@ const adminSignup = AsyncHandler(async (req, res, next) => {
     const file = req.file;
 
     // Set isProduction flage based on .env
-     const isProduction = process.env.NODE_ENV === "PRODUCTION"
+     const isProduction = process.env.NODE_ENV === "production"
 
     // Validate inputs
     if(!fullName || !email || !password || !file){
@@ -76,7 +76,7 @@ const adminLogin = AsyncHandler(async (req, res, next) => {
     const {email, password} = req.body;
 
        // Set isProduction flage based on .env
-     const isProduction = process.env.NODE_ENV === "PRODUCTION"
+     const isProduction = process.env.NODE_ENV === "production"
 
     if(!email || !password){
         throw new ApiError(400, "Email and password are required")
