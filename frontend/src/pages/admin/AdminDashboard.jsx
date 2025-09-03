@@ -90,7 +90,7 @@ const AdminDashboard = () => {
             </thead>
             <tbody>
               {blogs.map(blog => (
-                <tr key={blog._id} className="border-b">
+                <tr key={blog._id} onClick={() => navigate(`/blogs/${blog._id}`)} className="border-b">
                   <td className="p-2">{blog.title}</td>
                   <td className="p-2">{blog?.author?.username || 'N/A'}</td>
                 </tr>

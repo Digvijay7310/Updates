@@ -95,6 +95,7 @@ function EditBlog() {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             required
+            rows={20}
             maxLength={5000}
           />
           <p className="text-right text-sm text-gray-500">{content.length}/5000</p>

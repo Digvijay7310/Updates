@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { LuEye, LuEyeClosed } from "react-icons/lu";
 import { MdEmail, MdLock } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosInstance";
 import { toast } from "react-toastify";
 
@@ -83,6 +83,7 @@ const AdminLogin = () => {
         >
           Login as Admin
         </button>
+        {/* <Link to='/admin/register' className="text-center text-red-600">Register as a admin</Link> */}
       </form>
     </section>
   );

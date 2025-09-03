@@ -15,39 +15,43 @@ function CreateBlog() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!title || !content) {
-      return toast.error('Title and content are required');
-    }
+  if (!title || !content) {
+    return toast.error('Title and content are required');
+  }
 
-    if (content.length > 4999) {
-      return toast.error('Content must be less than 5000 characters');
-    }
+  if (content.length > 3999) {
+    return toast.error('Content must be less than 5000 characters');
+  }
 
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('content', content);
+  const formData = new FormData();
+  formData.append('title', title);
+  formData.append('content', content);
 
-    for (let i = 0; i < images.length; i++) {
-      formData.append('images', images[i]);
-    }
+  for (let i = 0; i < images.length; i++) {
+    formData.append('images', images[i]);
+  }
 
-    try {
-      setLoading(true);
-      const res = await axiosInstance.post('/blogs', formData);
-      toast.success(res.data?.message || 'Blog created successfully!');
-      setTitle('');
-      setContent('');
-      setImages([]);
-      navigate('/');
-    } catch (error) {
-      console.error('Error creating blog:', error);
-      toast.error(error.response?.data?.message || 'Failed to create Blog');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    const res = await axiosInstance.post('/blogs', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // important!
+      },
+    });
+    toast.success(res.data?.message || 'Blog created successfully!');
+    setTitle('');
+    setContent('');
+    setImages([]);
+    navigate('/');
+  } catch (error) {
+    console.error('Error creating blog:', error);
+    toast.error(error.response?.data?.message || 'Failed to create Blog');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section className='container mx-auto px-4 py-6 max-w-3xl'>
@@ -66,6 +70,7 @@ function CreateBlog() {
         />
 
         <label className='font-semibold'>Blog Content</label>
+        <p className='text-red-400 text-xs'>The content max length is 4000 characterstics.</p>
         <textarea
           placeholder='Write your blog here...'
           value={content}
@@ -76,7 +81,7 @@ function CreateBlog() {
           maxLength={5000}
         />
         <div className='text-sm text-gray-500 text-right'>
-          {content.length}/5000 characters
+          {content.length}/4000 characters
         </div>
 
         <label className='font-semibold'>Upload Images</label>

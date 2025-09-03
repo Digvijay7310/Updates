@@ -12,7 +12,7 @@ function SearchBar({value, onChange, onSubmit}) {
          placeholder='Search here...'
          value={value || ''}
          onChange={onChange}
-        className='w-full px-4 py-2 md:w-[500px] focus:outline-none '
+        className='w-full px-4 py-2 md:w-[300px] focus:outline-none '
         />
         <button type='submit' className='ml-2 p-3 bg-blue-600 text-white rounded hover:cursor-pointer'><FaSearch size={20} className='text-center' /> </button>
     </form>

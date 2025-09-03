@@ -30,7 +30,7 @@ const createBlog = AsyncHandler(async(req, res)=> {
         })
 
         return  res.status(201).json(
-            new ApiResponse(201, blog, "Blog created successfully")
+            new ApiResponse(201, {}, "Blog created successfully")
         );
 });
 
@@ -39,7 +39,7 @@ const getAllBlogs = AsyncHandler(async (req, res)=> {
     const blogs = await Blog.find({isPublished: true}).sort({createdAt: -1}).populate("author", "fullName username avatar");
 
     return res.status(200).json(
-        new ApiResponse(200, blogs, "All blogs fetched")
+        new ApiResponse(200, {}, "All blogs fetched")
     )
 });
 

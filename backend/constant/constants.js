@@ -1,1 +1,1 @@
-export const DB_NAME="GETNEWS";
+export const DB_NAME="GetNews";
