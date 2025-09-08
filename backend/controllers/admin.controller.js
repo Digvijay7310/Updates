@@ -272,6 +272,10 @@ const deleteUser = AsyncHandler(async (req, res) => {
     const user = await User.findById(id);
     if(!user) throw new ApiError(404, "User not found");
 
+    const blogs = await Blog.find({author: id})
+
+    await blogs.deleteMany();
+
     await user.deleteOne();
     return res.status(200).json(
         new ApiResponse(200, {}, "User deleted successfully")
