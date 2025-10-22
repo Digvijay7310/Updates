@@ -80,11 +80,13 @@ function BlogDetails() {
 
         <h5 className='text-gray-600 font-serif my-4 p-2 bg-gray-200'>{blog.content.slice(0, 100)}...</h5>
         {blog.images && blog.images.length > 0 && (
-            <img src={blog.images[0]} alt="Blog visual" 
-            className='w-full h-64 object-fill rounded mb-6'
+            <div className='aspect-video'>
+              <img src={blog.images[0]} alt="Blog visual" 
+            className='w-full h-full object-fit rounded mb-6'
             />
+            </div>
         )}
-        <p className="text-gray-700 leading-relaxed text-lg whitespace-pre-line">{blog.content}</p>
+        <p className="text-gray-700 leading-relaxed mt-4 text-sm md:text-lg whitespace-pre-line">{blog.content}</p>
     </section>
   )
 }
