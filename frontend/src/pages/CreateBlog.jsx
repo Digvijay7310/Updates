@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import axiosInstance from '../utils/axiosInstance';
 import { useNavigate } from 'react-router-dom';
@@ -53,8 +53,11 @@ function CreateBlog() {
   }
 };
 
+useEffect(() => {
+  document.title = "GETUPDATES | Create a new Blog"
+})
   return (
-    <section className='container mx-auto px-4 py-6 max-w-3xl'>
+    <section className='container mx-auto px-4 py-6 max-w-3xl shadow-2xl shadow-indigo-400'>
       <h1 className='text-3xl font-bold mb-6 text-center'>Create New Blog</h1>
 
       <form onSubmit={handleSubmit} className='flex flex-col gap-4 bg-white p-6 shadow-md rounded-lg'>
@@ -110,7 +113,7 @@ function CreateBlog() {
         <button
           type='submit'
           disabled={loading}
-          className={`bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition ${
+          className={`bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition ${
             loading ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >

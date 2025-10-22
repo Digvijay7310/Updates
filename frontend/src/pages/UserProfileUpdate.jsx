@@ -88,7 +88,7 @@ export default function UserProfileUpdate() {
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-      <h1 className="text-2xl font-bold mb-6 text-center text-blue-700">
+      <h1 className="text-2xl font-bold mb-6 text-center text-indigo-700">
         Update Profile
       </h1>
 
@@ -117,7 +117,7 @@ export default function UserProfileUpdate() {
             onChange={handleChange}
             required
             placeholder="Enter your full name"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -133,7 +133,7 @@ export default function UserProfileUpdate() {
             onChange={handleChange}
             required
             placeholder="Enter your username"
-            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
         </div>
 
@@ -176,7 +176,7 @@ export default function UserProfileUpdate() {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full bg-blue-600 text-white py-2 rounded-md transition hover:bg-blue-700 ${
+          className={`w-full bg-indigo-600 text-white py-2 rounded-md transition hover:bg-indigo-700 ${
             loading ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >

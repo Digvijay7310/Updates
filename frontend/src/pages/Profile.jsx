@@ -73,7 +73,7 @@ function Profile() {
 
   return (
     <section className="container mx-auto p-6 max-w-lg bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6 text-blue-700">My Profile</h1>
+      <h1 className="text-2xl font-bold mb-6 text-indigo-700">My Profile</h1>
 
       {!editing ? (
         <div className="space-y-4">
@@ -96,7 +96,7 @@ function Profile() {
 
           <button
             onClick={() => setEditing(true)}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded flex items-center gap-2 hover:bg-blue-700"
+            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded flex items-center gap-2 hover:bg-indigo-700"
           >
             <LuPencil size={18} />
             Edit Profile
@@ -138,7 +138,7 @@ function Profile() {
             </label>
             <label
               htmlFor="avatar"
-              className="inline-block bg-blue-100 hover:bg-blue-600 hover:text-white px-4 py-2 rounded cursor-pointer"
+              className="inline-block bg-indigo-100 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded cursor-pointer"
             >
               Choose File
             </label>

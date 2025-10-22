@@ -32,7 +32,7 @@ function BlogCard({ heading, description, id, image }) {
         {/* Share button positioned on top-right of thumbnail */}
         <button
           onClick={handleShare}
-          className="absolute top-1 right-1 bg-white bg-opacity-90 rounded-full p-1 text-gray-600 hover:text-blue-600 shadow-md transition-colors"
+          className="absolute top-1 right-1 bg-white bg-opacity-90 rounded-full p-1 text-gray-600 hover:text-indigo-600 shadow-md transition-colors"
           title="Share"
           onClickCapture={(e) => e.preventDefault()} // prevent navigation on click
         >
@@ -48,7 +48,7 @@ function BlogCard({ heading, description, id, image }) {
         <p className="text-gray-700 text-xs line-clamp-4 mb-2">
           {description.slice(0, 50)}
         </p>
-        <span className="text-blue-600 font-semibold text-sm cursor-pointer self-start">
+        <span className="text-indigo-600 font-semibold text-sm cursor-pointer self-start">
           Read more →
         </span>
       </div>

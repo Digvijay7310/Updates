@@ -4,7 +4,7 @@ const DashboardCard = ({ title, count, icon }) => {
   return (
     <div className="bg-white shadow rounded-lg p-6 flex items-center space-x-4">
       {icon && (
-        <div className="text-blue-500 text-4xl">
+        <div className="text-indigo-500 text-4xl">
           {icon}
         </div>
       )}

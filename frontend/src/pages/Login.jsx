@@ -37,7 +37,7 @@ function Login() {
         id="login-form"
         className="bg-white p-8 w-full max-w-md rounded-2xl shadow-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-600">Login to GETUPDATES</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center text-indogo-600">Login to GETUPDATES</h2>
 
         {/* Email Field */}
         <div className="flex items-center border-2 border-gray-300 rounded mb-4 px-3 py-2">
@@ -75,7 +75,7 @@ function Login() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-200"
         >
           Login
         </button>
@@ -83,7 +83,7 @@ function Login() {
         {/* Register Redirect */}
         <p className="text-sm text-center text-gray-700 mt-4">
           Don't have an account?{' '}
-          <Link to="/register" className="text-blue-500 hover:underline">
+          <Link to="/register" className="text-indigo-500 hover:underline">
             Register
           </Link>
           <br />

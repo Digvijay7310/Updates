@@ -57,7 +57,7 @@ function Register() {
         id="register-form"
         className="bg-white p-8 w-full max-w-md rounded-2xl shadow-md flex flex-col items-center"
       >
-        <h2 className="text-2xl font-bold mb-6 text-blue-600">Register to GETUPDATES</h2>
+        <h2 className="text-2xl font-bold mb-6 text-indigo-600">Register to GETUPDATES</h2>
 
         {/* Full Name */}
         <div className="flex items-center border-2 border-gray-300 rounded mb-3 px-3 py-2 w-full">
@@ -134,7 +134,7 @@ function Register() {
             onChange={handleAvatarChange}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-4
             file:rounded-full file:border-0 file:text-sm file:font-semibold
-            file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
+            file:bg-blue-100 file:text-indigo-700 hover:file:bg-blue-200"
           />
           {avatarPreview && (
             <img
@@ -148,7 +148,7 @@ function Register() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition duration-200"
+          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-200"
         >
           {loading ? 'Registering...' : 'Register'}
         </button>
@@ -156,7 +156,7 @@ function Register() {
         {/* Link to Login */}
         <p className="text-sm text-center text-gray-700 mt-4">
           Already have an account?{' '}
-          <Link to="/login" className="text-blue-500 hover:underline">
+          <Link to="/login" className="text-indigo-500 hover:underline">
             Login
           </Link>
         </p>

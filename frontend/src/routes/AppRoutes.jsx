@@ -19,6 +19,7 @@ import AdminLogin from '../pages/admin/AdminLogin';
 import AdminProfile from '../pages/admin/AdminProfile';
 import SingleUser from '../pages/admin/SingleUser';
 import AdminLayout from '../Layout/AdminLayout';
+import ShortVideo from '../pages/ShortVideo';
 
 function AppRoutes() {
   return (
@@ -33,6 +34,7 @@ function AppRoutes() {
         <Route path="blogs/:id/edit" element={<EditBlog />} />
         <Route path="user-profile" element={<Profile />} />
         <Route path="user-profile-update" element={<UserProfileUpdate />} />
+        <Route path='short-video' element={<ShortVideo />} />
         <Route path="*" element={<NotFound />} />
       </Route>
 
