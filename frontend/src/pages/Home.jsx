@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import BlogList from './BlogList';
 import Loading from '../components/Loading';
 
@@ -61,7 +60,7 @@ function Home() {
 
 
   return (
-    <section className="container mx-auto px-4 py-6 md:px-20">
+    <section className="container mx-auto p-1 md:px-10">
 
 
       {/* Blog Content */}

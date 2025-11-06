@@ -20,10 +20,10 @@ function BlogCard({ heading, description, id, image }) {
   return (
     <Link
       to={`/blogs/${id}`}
-      className="flex items-start gap-4 max-w-3xl mx-auto bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 p-4"
+      className="flex items-start gap-4 w-full max-w-[450px]  bg-white border border-gray-300 rounded-md shadow-sm hover:shadow-md transition-shadow duration-300 p-1"
     >
       {/* Small Image Thumbnail */}
-      <div className="flex-shrink-0 w-24 h-24 overflow-hidden rounded-md relative">
+      <div className="flex-shrink-0 w-20 h-20 md:w-30 md:h-30 overflow-hidden rounded-md relative">
         <img
           src={image || dummyImage}
           alt="blog thumbnail"
@@ -42,13 +42,13 @@ function BlogCard({ heading, description, id, image }) {
 
       {/* Text Content */}
       <div className="flex flex-col flex-grow">
-        <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 line-clamp-2">
+        <h3 className="text-xs md:text-sm font-semibold text-gray-900 mb-1 line-clamp-2">
           {heading}
         </h3>
-        <p className="text-gray-700 text-xs line-clamp-4 mb-2">
-          {description.slice(0, 50)}
+        <p className="text-gray-900 text-xs font-extralight line-clamp-2 md:line-clamp-4 mb-2">
+          {description.slice(0, 100)}
         </p>
-        <span className="text-indigo-600 font-semibold text-sm cursor-pointer self-start">
+        <span className="text-indigo-600 hover:text-red-600 transition-colors duration-100 font-semibold text-sm cursor-pointer">
           Read more →
         </span>
       </div>

@@ -11,6 +11,7 @@ function Profile() {
   const [formData, setFormData] = useState({
     fullName: '',
     username: '',
+    email: '',
     avatar: null,
     avatarPreview: null,
   });
@@ -19,17 +20,17 @@ function Profile() {
     const fetchProfile = async () => {
       try {
         const res = await axiosInstance.get('/user/profile');
-        setUser(res.data.data);
+        const data = res.data.data;
+        setUser(data);
         setFormData({
-          fullName: res.data.data.fullName,
-          username: res.data.data.username,
-          email: res.data.data.email,
+          fullName: data.fullName,
+          username: data.username,
+          email: data.email,
           avatar: null,
-          avatarPreview: res.data.data.avatar,
+          avatarPreview: data.avatar,
         });
-
       } catch (error) {
-        toast.error('Failed to fetch profile', error);
+        toast.error('Failed to fetch profile');
       } finally {
         setLoading(false);
       }
@@ -53,7 +54,6 @@ function Profile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const form = new FormData();
       form.append('fullName', formData.fullName);
@@ -72,123 +72,139 @@ function Profile() {
   if (loading) return <Loading />;
 
   return (
-    <section className="container mx-auto p-6 max-w-lg bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-6 text-indigo-700">My Profile</h1>
+    <section className="min-h-screen flex justify-center items-center bg-gray-50 px-4 py-10">
+      <div className="w-full max-w-lg bg-white shadow-lg rounded-xl p-8">
+        <h1 className="text-3xl font-bold text-sky-700 mb-8 text-center border-b pb-3">
+          My Profile
+        </h1>
 
-      {!editing ? (
-        <div className="space-y-4">
-          <img
-            src={user.avatar}
-            alt={user.fullName}
-            className="w-24 h-24 rounded-full object-cover mb-2"
-          />
-          <div>
-            <p className="text-gray-800">
-              <strong>Full Name:</strong> {user.fullName}
-            </p>
-            <p className="text-gray-800">
-              <strong>Email:</strong> {user.email}
-            </p>
-            <p className="text-gray-800">
-              <strong>Username:</strong> {user.username}
-            </p>
-          </div>
-
-          <button
-            onClick={() => setEditing(true)}
-            className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded flex items-center gap-2 hover:bg-indigo-700"
-          >
-            <LuPencil size={18} />
-            Edit Profile
-          </button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div>
-            <label htmlFor="fullName" className="block font-medium text-gray-700 mb-1">
-              Full Name
-            </label>
-            <input
-              type="text"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-              required
-              className="w-full border border-gray-300 p-2 rounded"
+        {!editing ? (
+          <div className="flex flex-col items-center space-y-5">
+            <img
+              src={user.avatar}
+              alt={user.fullName}
+              className="w-28 h-28 rounded-full object-cover border-4 border-sky-100 shadow"
             />
-          </div>
+            <div className="space-y-2 text-gray-700 text-center">
+              <p>
+                <strong>Full Name:</strong> {user.fullName}
+              </p>
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+              <p>
+                <strong>Username:</strong> {user.username}
+              </p>
+            </div>
 
-          <div>
-            <label htmlFor="username" className="block font-medium text-gray-700 mb-1">
-              Username
-            </label>
-            <input
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              required
-              className="w-full border border-gray-300 p-2 rounded"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="avatar" className="block font-medium text-gray-700 mb-1">
-              Upload Avatar
-            </label>
-            <label
-              htmlFor="avatar"
-              className="inline-block bg-indigo-100 hover:bg-indigo-600 hover:text-white px-4 py-2 rounded cursor-pointer"
+            <button
+              onClick={() => setEditing(true)}
+              className="mt-4 px-5 py-2.5 bg-sky-700 text-white rounded-lg flex items-center gap-2 hover:bg-sky-800 transition"
             >
-              Choose File
-            </label>
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              accept="image/*"
-              onChange={handleAvatarChange}
-              className="hidden"
-            />
-            {formData.avatarPreview && (
-              <img
-                src={formData.avatarPreview}
-                alt="avatar preview"
-                className="w-20 h-20 rounded-full mt-2 object-cover"
+              <LuPencil size={18} />
+              Edit Profile
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label
+                htmlFor="fullName"
+                className="block font-medium text-gray-700 mb-1"
+              >
+                Full Name
+              </label>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none transition"
               />
-            )}
-          </div>
+            </div>
 
-          <div className="flex gap-3 pt-4">
-            <button
-              type="submit"
-              className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-            >
-              <LuSave size={18} />
-              Save
-            </button>
+            <div>
+              <label
+                htmlFor="username"
+                className="block font-medium text-gray-700 mb-1"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                required
+                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-sky-500 outline-none transition"
+              />
+            </div>
 
-            <button
-              type="button"
-              onClick={() => {
-                setEditing(false);
-                setFormData({
-                  fullName: user.fullName,
-                  username: user.username,
-                  avatar: null,
-                  avatarPreview: user.avatar,
-                });
-              }}
-              className="flex items-center gap-2 bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400"
-            >
-              <LuX size={18} />
-              Cancel
-            </button>
-          </div>
-        </form>
-      )}
+            <div>
+              <label
+                htmlFor="avatar"
+                className="block font-medium text-gray-700 mb-1"
+              >
+                Upload Avatar
+              </label>
 
-      <div>{}</div>
+              <div className="flex items-center gap-3">
+                <label
+                  htmlFor="avatar"
+                  className="inline-block bg-sky-100 text-sky-800 font-medium px-4 py-2 rounded-lg hover:bg-sky-700 hover:text-white cursor-pointer transition"
+                >
+                  Choose File
+                </label>
+                {formData.avatarPreview && (
+                  <img
+                    src={formData.avatarPreview}
+                    alt="avatar preview"
+                    className="w-16 h-16 rounded-full object-cover border border-gray-300 shadow-sm"
+                  />
+                )}
+              </div>
+
+              <input
+                type="file"
+                id="avatar"
+                name="avatar"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+            </div>
+
+            <div className="flex gap-3 pt-4 justify-end">
+              <button
+                type="submit"
+                className="flex items-center gap-2 bg-green-700 text-white px-4 py-2 rounded-lg hover:bg-sky-800 transition"
+              >
+                <LuSave size={18} />
+                Save
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setEditing(false);
+                  setFormData({
+                    fullName: user.fullName,
+                    username: user.username,
+                    email: user.email,
+                    avatar: null,
+                    avatarPreview: user.avatar,
+                  });
+                }}
+                className="flex items-center gap-2 bg-gray-200 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-300 transition"
+              >
+                <LuX size={18} />
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+      </div>
     </section>
   );
 }

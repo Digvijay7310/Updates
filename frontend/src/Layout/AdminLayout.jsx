@@ -8,16 +8,19 @@ function AdminLayout() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-gray-100 overflow-x-hidden">
       {/* Mobile Top Bar */}
-      <div className="md:hidden flex justify-between items-center bg-white px-4 py-3 shadow">
-        <h2 className="text-xl font-bold text-blue-600">Admin Panel</h2>
-        <button onClick={() => setIsSidebarOpen(prev => !prev)} className="text-gray-700">
+      <div className="md:hidden sticky top-0 left-0 flex justify-between z-50 items-center bg-white px-4 py-3 shadow">
+        <h2 className="text-xl font-bold text-sky-700">Admin Panel</h2>
+        <button
+          onClick={() => setIsSidebarOpen((prev) => !prev)}
+          className="text-gray-700"
+        >
           <FaBars size={24} />
         </button>
       </div>
 
-      <div className="flex flex-1 relative">
+      <div className="flex flex-1 relative overflow-x-hidden">
         {/* Sidebar */}
         <div
           className={`fixed top-0 left-0 h-full w-64 bg-white shadow-md z-50 transform ${
@@ -36,9 +39,11 @@ function AdminLayout() {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 p-4 mt-4 md:mt-0 md:ml-4">
-          <Outlet />
-        </div>
+        <main className="flex-1 p-4 mt-4 md:mt-0 md:ml-4 w-full max-w-full overflow-x-hidden">
+          <div className="max-w-screen-lg mx-auto w-full">
+            <Outlet />
+          </div>
+        </main>
       </div>
 
       <Footer />

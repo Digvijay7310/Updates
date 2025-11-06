@@ -3,7 +3,7 @@ import BlogCard from '../components/BlogCard'
 
 function BlogList({blogs}) {
   return (
-    <div className='grid grid-cols-1 md:grid-cols-3 gap-2'>
+    <div className='flex justify-center items-center flex-wrap gap-4'>
         {blogs.map((blog) => (
                 <BlogCard
                  key={blog._id}

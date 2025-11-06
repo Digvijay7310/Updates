@@ -2,9 +2,9 @@ import React from "react";
 
 const DashboardCard = ({ title, count, icon }) => {
   return (
-    <div className="bg-white shadow rounded-lg p-6 flex items-center space-x-4">
+    <div className="bg-white w-full shadow-md rounded-lg p-4 flex items-center gap-4 hover:shadow-lg transition">
       {icon && (
-        <div className="text-indigo-500 text-4xl">
+        <div className="text-sky-700 text-4xl">
           {icon}
         </div>
       )}

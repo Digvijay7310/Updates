@@ -1,6 +1,5 @@
 import React from 'react'
 import { FaSearch } from 'react-icons/fa'
-import { LuSearch } from 'react-icons/lu'
 
 function SearchBar({value, onChange, onSubmit}) {
   return (

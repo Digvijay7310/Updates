@@ -47,7 +47,7 @@ function BlogDetails() {
   }
 
   return (
-    <section className='w-full px-4 md:px-8 py-8 flex justify-center'>
+    <section className='w-full px-1 md:px-8 py-8 flex justify-center'>
       <div className='w-full '>
         <h1 className='text-3xl font-bold mb-4'>{blog.title}</h1>
 
@@ -57,7 +57,7 @@ function BlogDetails() {
             <img
               src={blog.author?.avatar || avatarFallback}
               alt={blog.author?.fullName || 'Author Avatar'}
-              className='h-10 w-10 rounded-full object-cover border'
+              className='h-10 w-10 rounded-full object-contain border'
               onError={(e) => (e.currentTarget.src = avatarFallback)}
             />
             <div>

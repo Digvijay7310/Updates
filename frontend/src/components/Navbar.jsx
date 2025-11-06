@@ -15,14 +15,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
 import { toast } from 'react-toastify';
 import avatar from '../assets/avatar.jpg';
-import SearchBar from './SearchBar';
-import { LuSearch, LuUser } from 'react-icons/lu';
+import { LuUser } from 'react-icons/lu';
 
 function Navbar() {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showSearch, setShowSearch] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,7 +38,7 @@ function Navbar() {
   }, []);
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
-  const toggleSearch = () => setShowSearch((prev) => !prev);
+
 
   const handleLogout = async () => {
     try {
@@ -55,40 +53,13 @@ function Navbar() {
     }
   };
 
-  const onSearchSubmit = (e) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      navigate(`/?search=${encodeURIComponent(searchQuery.trim())}`);
-      setShowSearch(false);
-    }
-  };
+
 
   return (
-    <header className="sticky top-0 z-50 bg-indigo-900 shadow-md">
+    <header className="sticky top-0 z-50">
       {/* Main Navbar */}
       <nav className="flex items-center justify-between px-4 py-3 md:px-20">
-        {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-white">
-          GETUPDATES
-        </Link>
 
-        {/* Search Icon (Mobile Only) */}
-        <button
-          className="text-white md:hidden"
-          onClick={toggleSearch}
-          aria-label="Toggle Search"
-        >
-          <LuSearch size={20} />
-        </button>
-
-        {/* SearchBar (Desktop) */}
-        <div className="hidden md:block">
-          <SearchBar
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onSubmit={onSearchSubmit}
-          />
-        </div>
 
         {/* Right Side: Avatar + Menu Button */}
         <div className="flex items-center gap-4">
@@ -107,16 +78,6 @@ function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile SearchBar (Sticky inside header) */}
-      {showSearch && (
-        <div className="px-4 py-2 bg-indigo-800 md:hidden border-t">
-          <SearchBar
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onSubmit={onSearchSubmit}
-          />
-        </div>
-      )}
 
       {/* Dropdown Menu */}
       {menuOpen && (
