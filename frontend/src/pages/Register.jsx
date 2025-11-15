@@ -1,168 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import { LuEye, LuEyeClosed } from 'react-icons/lu';
-import { MdPerson, MdPersonOutline, MdEmail, MdLock } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../utils/axiosInstance';
-import { toast } from 'react-toastify';
-import Loading from '../components/Loading';
+import { useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
-function Register() {
-  const [showPassword, setShowPassword] = useState(false);
+export default function Register() {
+  const [fullName, setFullName] = useState("");
+  const [description, setDescription] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    document.title = 'Register | GETUPDATES';
-  }, []);
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    setAvatar(file);
-    if (file) {
-      setAvatarPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const handleSubmit = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('fullName', e.target.fullName.value);
-    formData.append('username', e.target.username.value);
-    formData.append('email', e.target.email.value);
-    formData.append('password', e.target.password.value);
-    formData.append('avatar', avatar);
+    formData.append("fullName", fullName);
+    formData.append("description", description);
+    formData.append("email", email);
+    formData.append("password", password);
+    if (avatar) formData.append("avatar", avatar);
 
     try {
-      setLoading(true);
-      const res = await axiosInstance.post('/user/register', formData, {
-        withCredentials: true,
+      const res = await axiosInstance.post("/users/register", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      toast.success(res.data.message || 'Registration successful');
-      navigate('/');
-    } catch (error) {
-      const errMsg = error.response?.data?.message || 'Registration failed';
-      toast.error(errMsg);
-    } finally {
-      setLoading(false);
+
+      login(res.data.data.user);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Registration failed");
     }
   };
 
   return (
-    <section className="min-h-screen flex items-center justify-center bg-gray-200 px-4">
+    <div className="flex justify-center items-center min-h-[90vh] px-4">
       <form
-        onSubmit={handleSubmit}
-        id="register-form"
-        className="bg-white p-8 w-full max-w-md rounded-2xl shadow-md flex flex-col items-center"
+        onSubmit={handleRegister}
+        className="w-full max-w-lg bg-white shadow-xl rounded-xl p-7 border"
       >
-        <h2 className="text-2xl font-bold mb-6 text-indigo-600">Register to GETUPDATES</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center text-orange-600">
+          Create Account
+        </h2>
 
         {/* Full Name */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-3 px-3 py-2 w-full">
-          <MdPerson className="text-gray-500 mr-2" size={20} />
-          <input
-            type="text"
-            name="fullName"
-            placeholder="Full Name"
-            required
-            autoComplete="name"
-            className="w-full bg-transparent outline-none"
-          />
-        </div>
-
-        {/* Username */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-3 px-3 py-2 w-full">
-          <MdPersonOutline className="text-gray-500 mr-2" size={20} />
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            required
-            autoComplete="username"
-            className="w-full bg-transparent outline-none"
-          />
-        </div>
+        <input
+          type="text"
+          placeholder="Full Name"
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+          required
+        />
 
         {/* Email */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-3 px-3 py-2 w-full">
-          <MdEmail className="text-gray-500 mr-2" size={20} />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            autoComplete="email"
-            className="w-full bg-transparent outline-none"
-          />
-        </div>
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
         {/* Password */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-3 px-3 py-2 w-full">
-          <MdLock className="text-gray-500 mr-2" size={20} />
-          <input
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            required
-            autoComplete="new-password"
-            className="w-full bg-transparent outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-gray-600"
-          >
-            {showPassword ? <LuEye size={20} /> : <LuEyeClosed size={20} />}
-          </button>
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        {/* Description */}
+        <textarea
+          placeholder="Bio / Description"
+          rows={3}
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
 
         {/* Avatar Upload */}
-        <div className="mb-4 text-sm text-left w-full">
-          <label
-            htmlFor="avatar"
-            className="block mb-1 font-medium text-gray-700 cursor-pointer"
-          >
-            Upload Avatar:
-          </label>
+        <div className="mb-4">
+          <label className="block mb-1 font-medium">Avatar</label>
           <input
             type="file"
-            id="avatar"
-            name="avatar"
             accept="image/*"
-            onChange={handleAvatarChange}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-1 file:px-4
-            file:rounded-full file:border-0 file:text-sm file:font-semibold
-            file:bg-blue-100 file:text-indigo-700 hover:file:bg-blue-200"
+            className="w-full cursor-pointer"
+            onChange={(e) => setAvatar(e.target.files[0])}
+            required
           />
-          {avatarPreview && (
-            <img
-              src={avatarPreview}
-              alt="Avatar"
-              className="h-14 w-14 rounded-full mt-2 border object-cover"
-            />
-          )}
         </div>
 
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-200"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg text-lg font-medium"
         >
-          {loading ? 'Registering...' : 'Register'}
+          Register
         </button>
 
-        {/* Link to Login */}
-        <p className="text-sm text-center text-gray-700 mt-4">
-          Already have an account?{' '}
-          <Link to="/login" className="text-indigo-500 hover:underline">
+        <p className="text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/login" className="text-orange-600 underline">
             Login
           </Link>
         </p>
       </form>
-    </section>
+    </div>
   );
 }
-
-export default Register;

@@ -1,17 +1,11 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+// components/Logo.jsx
+import React from "react";
+import './Logo.css'; // CSS file for animation
 
-function Logo() {
+export default function Logo({ size = "text-3xl" }) {
   return (
-    <div>
-        <Link to="/" className='flex flex-col items-center'>
-            <span className='text-xl text-[#ffdd02]'>U</span>
-            <i className='tracking-wider text-xs font-medium text-[#ffdd02]' style={{
-                textShadow: '2px 10px 10px red'
-            }}>UpdateS</i>
-        </Link>
+    <div className={`logo-wrapper ${size}`}>
+      <span className="logo-text">GetUpdates</span>
     </div>
-  )
+  );
 }
-
-export default Logo

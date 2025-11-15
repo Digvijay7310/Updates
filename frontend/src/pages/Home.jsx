@@ -1,78 +1,28 @@
-import React, { useEffect, useState } from 'react';
-import axiosInstance from '../utils/axiosInstance';
-import { toast } from 'react-toastify';
-import { useLocation, useNavigate } from 'react-router-dom';
-import BlogList from './BlogList';
-import Loading from '../components/Loading';
+// src/pages/Home.jsx
+import { useEffect, useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
+import BlogCard from "../components/BlogCard";
+import SearchBar from "../components/SearchBar";
 
-function Home() {
-  const location = useLocation();
-  const navigate = useNavigate();
-
+export default function Home() {
   const [blogs, setBlogs] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  // Fetch blogs by search query
-  const fetchSearchBlogs = async (query = '') => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.get(`/blogs/${query ? `search?q=${query}` : ''}`);
-      setBlogs(res.data.data || []);
-    } catch (error) {
-      toast.error('Failed to load blogs');
-      console.error('Search fetch error: ', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch all blogs
   const fetchBlogs = async () => {
-    setLoading(true);
-    try {
-      const res = await axiosInstance.get('/blogs');
-      setBlogs(res.data.data || []);
-    } catch (error) {
-      toast.error('Failed to load blogs');
-      console.error('Fetch error: ', error);
-    } finally {
-      setLoading(false);
-    }
+    const res = await axiosInstance.get("/blogs");
+    setBlogs(res.data.data);
   };
 
-  // Runs when URL search query changes
+
+
   useEffect(() => {
-    document.title = 'Home | GETUPDATES';
-
-    const params = new URLSearchParams(location.search);
-    const query = params.get('search') || '';
-
-    setSearchQuery(query);
-
-    if (query) {
-      fetchSearchBlogs(query);
-    } else {
-      fetchBlogs();
-    }
-  }, [location.search]);
-
-
+    fetchBlogs();
+  }, []);
 
   return (
-    <section className="container mx-auto p-1 md:px-10">
-
-
-      {/* Blog Content */}
-      {loading ? (
-        <Loading />
-      ) : blogs.length === 0 ? (
-        <p className="text-center text-gray-500">No blogs found</p>
-      ) : (
-        <BlogList blogs={blogs} />
-      )}
-    </section>
+    <div className="container mx-auto p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-auto">
+        {blogs.map(blog => <BlogCard key={blog._id} blog={blog} />)}
+      </div>
+    </div>
   );
 }
-
-export default Home;

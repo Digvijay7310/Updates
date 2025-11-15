@@ -133,7 +133,7 @@ export const updateProfile = AsyncHandler(async (req, res) => {
     res.status(200).json(new ApiResponse(200, updatedUser, 'Profile updated'))
 })
 
-export const getUserProfile = AsyncHandler(async (req, res) => {
+export const myProfile = AsyncHandler(async (req, res) => {
     const user = req.user;
 
     if (user.isBlocked) {
@@ -141,7 +141,7 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
     }
 
     // Fetch user's blogs
-    const blogs = await Blog.find({ author: user._id }).select("_id likes");
+    const blogs = await Blog.find({ author: user._id }).select("_id");
 
     // Count total blogs and total likes
     const totalBlogs = blogs.length;
@@ -153,6 +153,37 @@ export const getUserProfile = AsyncHandler(async (req, res) => {
         }, "User profile fetched successfully")
     );
 });
+
+export const getUsersProfile = AsyncHandler(async(req, res) => {
+    const {id} = req.params;
+
+
+
+    // Fetch the user
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+        throw new ApiError(404, "User not found");
+    }
+
+
+    // Fetch blogs by this user
+    const blogs = await Blog.find({ author: user._id }).select("_id likes");
+
+    // Count total blogs and total likes
+    const totalBlogs = blogs.length;
+
+    res.status(200).json(
+        new ApiResponse(
+            200,
+            {
+                user,
+                stats: { totalBlogs }
+            },
+            "User profile fetched successfully"
+        )
+    );
+})
 
 export const getUserStats = AsyncHandler(async(req, res) => {
     const blogs = await Blog.find({author: req.user._id}).select("_id likes")

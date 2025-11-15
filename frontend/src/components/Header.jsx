@@ -1,38 +1,38 @@
-import React from 'react';
-import SearchComponent from './SearchComponent';
-import Navbar from './Navbar';
-import Logo from './Logo';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { FiMenu, FiX } from "react-icons/fi";
+import { useAuth } from "../context/AuthContext";
+import SearchBar from "./SearchBar";
+import Navbar from "./Navbar";
+import Logo from "./Logo";
 
-function Header() {
+export default function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <header className="sticky top-0 left-0 w-full z-50 bg-sky-800 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Flex container */}
-        <div className="flex items-center justify-between h-16">
-          
-          {/* Left: Logo */}
-          <div className="flex-shrink-0">
-            <Logo />
-          </div>
+    <header className="bg-orange-500 text-white sticky top-0 left-0 shadow">
+      <div className="container mx-auto flex flex-col md:flex-row md:items-center md:justify-between p-4 space-y-4 md:space-y-0">
 
-          {/* Center: Search - hidden on very small screens */}
-          <div className="flex-1 mx-4 hidden sm:flex">
-            <SearchComponent />
-          </div>
+        {/* Logo + Hamburger */}
+        <div className="flex justify-between items-center w-full md:w-auto">
+          <Link to="/" className="font-bold text-lg md:text-xl"><Logo /></Link>
+          <button
+            className="md:hidden focus:outline-none"
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+          </button>
+        </div>
 
-          {/* Right: Navbar (avatar + menu) */}
-          <div className="flex-shrink-0">
-            <Navbar />
+        {/* Navbar links + SearchBar on large screens */}
+        <div className={`flex flex-col md:flex-row md:items-center md:space-x-4 w-full md:w-auto ${menuOpen ? "block" : "hidden"} md:flex`}>
+          <Navbar />
+          <div className="mt-2 md:mt-0 md:ml-4 md:flex-1">
+            <SearchBar />
           </div>
         </div>
 
-        {/* Mobile Search - below header for small screens */}
-        <div className="sm:hidden px-4 pb-2">
-          <SearchComponent />
-        </div>
       </div>
     </header>
   );
 }
-
-export default Header;

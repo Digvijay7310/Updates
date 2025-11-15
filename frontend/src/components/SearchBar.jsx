@@ -1,21 +1,31 @@
-import React from 'react'
-import { FaSearch } from 'react-icons/fa'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function SearchBar({value, onChange, onSubmit}) {
+export default function SearchBar() {
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+  };
+
   return (
-    <form
-    onSubmit={onSubmit}
-    className='flex items-center rounded-md bg-white '>
-        <input
-         type='search'
-         placeholder='Search here...'
-         value={value || ''}
-         onChange={onChange}
-        className='w-full bg-white px-4 py-2 md:w-[300px] outline-none border-0  '
-        />
-        <button type='submit' className='ml-2 p-3 bg-red-600 text-white rounded hover:cursor-pointer'><FaSearch size={20} className='text-center' /> </button>
+    <form onSubmit={handleSearch} className="flex w-full max-w-sm mx-auto">
+      <input
+        type="text"
+        placeholder="Search blogs..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="w-full px-4 py-2 rounded-l-md border border-gray-300 focus:outline-none"
+      />
+      <button
+        type="submit"
+        className="bg-white text-orange-500 px-4 py-2 rounded-r-md font-semibold hover:bg-gray-100"
+      >
+        Search
+      </button>
     </form>
-  )
+  );
 }
-
-export default SearchBar

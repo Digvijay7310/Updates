@@ -1,98 +1,67 @@
-import React, { useEffect, useState } from 'react';
-import { LuEye, LuEyeClosed } from 'react-icons/lu';
-import { MdEmail, MdLock } from 'react-icons/md';
-import { Link, useNavigate } from 'react-router-dom';
-import axiosInstance from '../utils/axiosInstance';
-import { toast } from 'react-toastify';
+import { useState } from "react";
+import axiosInstance from "../utils/axiosInstance";
+import { useAuth } from "../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
 
-function Login() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const email = e.target.email.value;
-    const password = e.target.password.value;
 
     try {
-      const res = await axiosInstance.post('/user/login', { email, password });
-      toast.success('Login successful');
-      navigate('/');
-      window.location.reload();
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed');
-      toast.error(error.message || 'Login failed');
+      const res = await axiosInstance.post("/users/login", { email, password });
+      login(res.data.data.user);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert("Login failed");
     }
   };
 
-  useEffect(() => {
-    document.title = 'Login | GETUPDATES';
-  }, []);
-
   return (
-    <section className="min-h-screen bg-gray-200 flex items-center justify-center px-4">
+    <div className="flex justify-center items-center min-h-[80vh] px-4">
       <form
-        onSubmit={handleLogin}
-        id="login-form"
-        className="bg-white p-8 w-full max-w-md rounded-2xl shadow-md"
+        onSubmit={handleSubmit}
+        className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 border"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center text-indogo-600">Login to GETUPDATES</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
 
-        {/* Email Field */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-4 px-3 py-2">
-          <MdEmail className="text-gray-500 mr-2" size={20} />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            required
-            autoComplete="true"
-            className="w-full bg-transparent outline-none"
-          />
-        </div>
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}     // 👈 IMPORTANT
+          required
+        />
 
-        {/* Password Field */}
-        <div className="flex items-center border-2 border-gray-300 rounded mb-4 px-3 py-2">
-          <MdLock className="text-gray-500 mr-2" size={20} />
-          <input
-            type={showPassword ? 'text' : 'password'}
-            name="password"
-            placeholder="Password"
-            required
-            autoComplete="true"
-            className="w-full bg-transparent outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="text-gray-600"
-          >
-            {showPassword ? <LuEye size={22} /> : <LuEyeClosed size={22} />}
-          </button>
-        </div>
+        <input
+          type="password"
+          placeholder="Password"
+          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}  // 👈 IMPORTANT
+          required
+        />
 
-        {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition duration-200"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg"
         >
           Login
         </button>
 
-        {/* Register Redirect */}
-        <p className="text-sm text-center text-gray-700 mt-4">
-          Don't have an account?{' '}
-          <Link to="/register" className="text-indigo-500 hover:underline">
+        <p className="text-center mt-4">
+          Don't have an account?{" "}
+          <Link to="/register" className="text-orange-500">
             Register
           </Link>
-          <br />
-          <Link to='/admin/login' className="text-red-500 hover:underline">Login as Admin</Link>
         </p>
-        
       </form>
-    </section>
+    </div>
   );
 }
-
-export default Login;

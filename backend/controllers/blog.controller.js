@@ -121,3 +121,15 @@ export const searchBlogs = AsyncHandler(async(req, res) => {
     )
 })
 
+export const getMyBlogs = AsyncHandler(async (req, res) => {
+    const userId = req.user._id;
+
+    const blogs = await Blog.find({ author: userId })
+        .sort({ createdAt: -1 })
+        .select("title description images createdAt");
+
+    return res.status(200).json(
+        new ApiResponse(200, blogs, "My blogs fetched successfully")
+    );
+});
+

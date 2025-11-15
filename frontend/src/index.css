@@ -1,1 +1,10 @@
 @import "tailwindcss";
+/* Add this to your global CSS if Tailwind is not enough */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
