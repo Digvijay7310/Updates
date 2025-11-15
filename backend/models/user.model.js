@@ -1,22 +1,3 @@
-/* 
-fullName
-email
-username
-password
-avatar
-isBlocked : Boolean
-
-/api/user/register
-
-/api/user/login
-
-/api/user/profile
-
-/api/user/edit-profile
-*/
-
-
-
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
@@ -36,28 +17,29 @@ const userSchema = mongoose.Schema({
         unique: true,
         trim: true
     },
-    username: {
-        type: String,
-        required: true,
-        unique: true,
-        trim: true,
-        lowerCase: true,
-    },
     password: {
         type: String,
+        min: 3,
         required: [true, "Password is required"],
-        min: 6
     },
     avatar: {
         type: String, 
         required: true,
     },
+    role:{
+        type: String,
+        default: "user"
+    },
+    description: {
+        type: String,
+        default: "Hey there! I am using GetUpdates.",
+        required: true,
+        max: 500,
+    },
     isBlocked: {
         type: Boolean,
         default: false
     },
-    resetPasswordToken: String,
-    resetPasswordExpiry: Date,
 }, {timestamps: true})
 
 // Hash Password before saving
@@ -97,6 +79,8 @@ process.env.REFRESH_TOKEN_SECRET, {
 }
 )
 }
+
+userSchema.index({fullName: "text"});
 
 
 export const User = mongoose.model("User", userSchema)

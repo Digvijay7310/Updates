@@ -1,42 +1,18 @@
 import jwt from 'jsonwebtoken'
-import {Admin} from "../models/admin.model.js"
-import {ApiError} from "../utils/ApiError.js"
-import {AsyncHandler} from "../utils/AsyncHandler.js"
+import { ApiError } from '../utils/ApiError.js'
 import { User } from '../models/user.model.js'
 
-export const verifyJWT = AsyncHandler(async(req, res, next) => {
-    const token = req.cookies?.accessToken;
-
-    if(!token){
-        throw new ApiError(401, "Unauthorized: No token provided");
-    }
-
-    let decoded;
+export const verifyJWT = async(req, res, next) => {
     try {
-        decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    } catch (error){
-        throw new ApiError(401, "Invalid Token");
+        const token = req.cookies?.accessToken;
+        if(!token) {
+            throw new ApiError(404, "Unauthorized access token not found")
+        }
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+        req.user = await User.findById(decoded._id).select("-password")
+        if(!req.user) throw new ApiError(401, "Invalid ACCESS TOKEN")
+            next()
+    } catch (error) {
+        next(new ApiError(401, error.message || "Invalid Token"))
     }
-    
-    // Find user in admin first
-    let user = await Admin.findById(decoded._id).select("-password")
-    
-    // If not found is Admin, check user
-    if(user){
-        req.user = user;
-        req.userModel = "Admin";
-        return next();
-    }
-    
-    // If not found in admin. check user
-    user = await User.findById(decoded._id).select("-password");
-
-   
-        if(user){
-            req.user = user;
-            req.userModel = "User";
-            return next();
-        } 
-            throw new ApiError(401, "User not found");
-
-})
+}

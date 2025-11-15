@@ -24,7 +24,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/admin", adminRoutes)
-app.use("/api/user", userRoutes)
+app.use("/api/users", userRoutes)
 app.use("/api/blogs", blogRoutes);
 
 export default app

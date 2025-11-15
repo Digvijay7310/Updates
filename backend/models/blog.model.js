@@ -1,36 +1,41 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const blogSchema = new Schema({
+const BlogSchema = mongoose.Schema({
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+    },
     title: {
         type: String,
-        required: true,
-        trim: true,
+        min: 3,
         maxLength: 150,
+        required: true,
+    },
+    description: {
+        type: String,
+        min: 3,
+        maxLength: 200,
+        required: true,
     },
     content: {
         type: String,
+        min: 200,
         required: true,
-        maxLength: 5000,
     },
-    images: [{
-        type: String,
-    }],
-    author: {
+    likes: {
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'authorModel',
-        required: true,
+        ref: "User",
     },
-    authorModel: {
-        type: String,
-        required: true,
-        enum: ["Admin", "User"]
+    keywords: {
+        type: [String],
+        default: ["others"],
     },
-    isPublished: {
-        type: Boolean,
-        default: true
-    }
+    images: [
+        {type: String},
+    ],
 }, {timestamps: true})
 
+BlogSchema.index({title: 'text', description:'text', keywords: 'text'})
 
-const Blog = mongoose.model("Blog", blogSchema)
-export {Blog}
+export const Blog = mongoose.model("Blog", BlogSchema)

@@ -1,20 +1,15 @@
 import express from 'express'
-import { getUserProfile, updateUserProfile, userLogin, userLogout, userRegister } from "../controllers/user.controller.js"
+import { getUserProfile, getUserStats, loginUser, logoutUser, registerUser, updateProfile } from "../controllers/user.controller.js"
 import { verifyJWT } from '../middlewares/auth.middleware.js'
 import {upload} from '../middlewares/multer.middleware.js'
 
 const router = express.Router()
 
-router.route("/register").post(
-    upload.single("avatar"),
-    userRegister
-)
-router.route("/login").post(userLogin)
-router.route("/logout").post(userLogout)
-router.route("/profile").get(verifyJWT, getUserProfile)
-router.route("/edit-profile").put(verifyJWT,
-    upload.single("avatar"),
-    updateUserProfile
-)
+router.post("/register", upload.single("avatar"), registerUser)
+router.post('/login', loginUser)
 
+router.post("/logout", verifyJWT, logoutUser)
+router.put("/update-profile", verifyJWT, upload.single("avatar"), updateProfile)
+router.get("/stats", verifyJWT, getUserStats)
+router.get("/profile", verifyJWT, getUserProfile)
 export default router;

@@ -1,173 +1,164 @@
+import jwt from 'jsonwebtoken'
 import { User } from "../models/user.model.js";
+import { Blog } from '../models/blog.model.js';
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { AsyncHandler } from "../utils/AsyncHandler.js";
 import uploadOnCloudinary from "../utils/cloudinary.js";
+import { loginSchema, registerSchema } from "../validator/user.validator.js";
 
 
+export const registerUser = AsyncHandler(async(req, res) => {
+    const {error} = registerSchema.validate(req.body)
+    if(error) throw new ApiError(400, error.details[0].message)
 
-const userRegister = AsyncHandler(async(req, res) => {
-    const {fullName, email, username, password} = req.body;
-    const file = req.file;
+        const {fullName, email, password, description} = req.body;
 
-    if(!fullName || !email || !username || !password || !file){
-        throw new ApiError(400, "All fields are required");
+        const exisitingUser = await User.findOne({email})
+        if(exisitingUser) {
+            throw new ApiError(409, "Email already exists")
+        }
+
+        const avatarFile = req.file?.path;
+        const avatarUploaded = await uploadOnCloudinary(avatarFile)
+        if(!avatarUploaded) throw new ApiError(500, "Avatar upload failed")
+
+            const user = await User.create({
+                fullName, 
+                email,
+                password,
+                avatar: avatarUploaded.url,
+                description,
+            })
+
+            const accessToken = user.generateAccessToken()
+            const refreshToken = user.generateRefreshToken()
+
+            res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 1000 * 60 * 60 * 4,
+    })
+    res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+    })
+            res.status(200)
+            .json(new ApiResponse(201, {user, accessToken, refreshToken}, "User registered."))
+});
+
+export const loginUser = AsyncHandler(async(req, res) => {
+    const {error} = loginSchema.validate(req.body)
+    if(error){
+        throw new ApiError(400, error.details[0].message)
     }
-
-    const existingUser = await User.findOne({$or: [{email}, {username}]});
-    if(existingUser) throw new ApiError(409, "User already exists");
-
-    const avatarUpload = await uploadOnCloudinary(file.path);
-    if(!avatarUpload || !avatarUpload.secure_url){
-        throw new ApiError(500, "Avatar upload failed");
+    const {email, password} = req.body;
+    const user = await User.findOne({email})
+    if(!user) {
+        throw new ApiError(404, "User with this email not found")
     }
-
-    const user = await User.create({
-        fullName,
-        email,
-        username,
-        password,
-        avatar: avatarUpload.secure_url,
-    });
-
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const isCorrect = await user.isPasswordCorrect(password)
+    if(!isCorrect){
+        throw new ApiError(401, "Incorrect password")
+    }
+    const accessToken = user.generateAccessToken()
+    const refreshToken = user.generateRefreshToken()
 
     res.cookie('accessToken', accessToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none": "lax",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 1000 * 60 * 60 * 4,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
+    })
+    res.cookie('refreshToken', refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
         maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
+    })
 
-    return res.status(201).json(
-        new ApiResponse(201, {
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            username: user.username,
-            avatar: user.avatar,
-        }, "User registered successfully")
-    )
+    res.status(200)
+    .json(new ApiResponse(200,{user, accessToken, refreshToken}, "Login successfull"))
 })
 
-
- const userLogin = AsyncHandler(async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) throw new ApiError(400, "Email and password required");
-
-    const user = await User.findOne({ email });
-    if (!user) throw new ApiError(404, "User not found");
-
-    const isPasswordValid = await user.isPasswordCorrect(password);
-    if (!isPasswordValid) throw new ApiError(401, "Invalid credentials");
-
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
-
-    res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 1000 * 60 * 60 * 4,
-    });
-
-    res.cookie("refreshToken", refreshToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-    });
-
-    return res.status(200).json(
-        new ApiResponse(200, {
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            username: user.username,
-            avatar: user.avatar,
-            accessToken,
-            refreshToken
-        }, "User logged in successfully")
-    );
-});
-
-
-
- const userLogout = AsyncHandler(async (req, res) => {
+export const logoutUser = AsyncHandler(async(req, res) => {
     res.clearCookie("accessToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
-
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    })
     res.clearCookie("refreshToken", {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    });
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax'
+    })
+    return res.status(200)
+    .json(new ApiResponse(200, {}, "Logout sucessfull"))
+})
 
-    return res.status(200).json(
-        new ApiResponse(200, {}, "Logged out successfully")
-    );
-});
+export const refreshAccessToken = AsyncHandler(async (req, res) => {
+    const {refreshToken} = req.body;
 
+    if(!refreshToken) throw new ApiError(401, "Refresh token required")
+        let decoded;
+    try {
+        decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET)
+    } catch (error) {
+        throw new ApiError(401, "Invalid refresh token")
+    }
+    const user = await User.findById(decoded._id)
+    if(!user) {
+        throw new ApiError(404, "USer not found")
+    }
+    const newAccess = user.generatAccessToken()
+    const newRefresh = user.generateRefreshToken()
 
+    res.json(new ApiResponse(200, {accessToken: newAccess, refreshToken: newRefresh}))
+})
 
- const getUserProfile = AsyncHandler(async (req, res) => {
+export const updateProfile = AsyncHandler(async (req, res) => {
+    const {fullName, description} = req.body;
+    const updateData = {fullName, description};
+
+    if(req.file){
+        const uploaded = await uploadOnCloudinary(req.file.path);
+        updateData.avatar = uploaded.url;
+    }
+    const updatedUser = await User.findByIdAndUpdate(req.user._id, updateData, {
+        new: true,
+    })
+    res.status(200).json(new ApiResponse(200, updatedUser, 'Profile updated'))
+})
+
+export const getUserProfile = AsyncHandler(async (req, res) => {
     const user = req.user;
 
-    return res.status(200).json(
-        new ApiResponse(200, {
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            username: user.username,
-            avatar: user.avatar,
-        }, "Profile fetched successfully")
-    );
-});
-
-
- const updateUserProfile = AsyncHandler(async (req, res) => {
-    const userId = req.user._id;
-    const { fullName, username } = req.body;
-    const file = req.file;
-
-    const user = await User.findById(userId);
-    if (!user) throw new ApiError(404, "User not found");
-
-    if (fullName) user.fullName = fullName;
-    if (username) user.username = username;
-
-    if (file) {
-        const avatarUpload = await uploadOnCloudinary(file.path);
-        if (!avatarUpload || !avatarUpload.secure_url) {
-            throw new ApiError(500, "Avatar upload failed");
-        }
-        user.avatar = avatarUpload.secure_url;
+    if (user.isBlocked) {
+        throw new ApiError(403, "Your account is blocked");
     }
 
-    await user.save();
+    // Fetch user's blogs
+    const blogs = await Blog.find({ author: user._id }).select("_id likes");
 
-    return res.status(200).json(
+    // Count total blogs and total likes
+    const totalBlogs = blogs.length;
+
+    res.status(200).json(
         new ApiResponse(200, {
-            _id: user._id,
-            fullName: user.fullName,
-            username: user.username,
-            email: user.email,
-            avatar: user.avatar,
-        }, "Profile updated successfully")
+            user,
+            stats: { totalBlogs }
+        }, "User profile fetched successfully")
     );
 });
 
+export const getUserStats = AsyncHandler(async(req, res) => {
+    const blogs = await Blog.find({author: req.user._id}).select("_id likes")
 
-export {userRegister, userLogin, userLogout, getUserProfile, updateUserProfile}
+    const totalBlogs = blogs.length;
+    const totalLikes = blogs.reduce((sum, blog) => sum + blog.likes.length, 0)
+
+    res.json(new ApiResponse(200, {totalBlogs, totalLikes}))
+})

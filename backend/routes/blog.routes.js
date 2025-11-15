@@ -6,15 +6,14 @@ import { upload } from '../middlewares/multer.middleware.js'
 const router = express.Router();
 
 // Public
-router.route("/search").get(searchBlogs)
-router.route("/").get(getAllBlogs)
-router.route("/:id").get(getBlogById)
+router.get("/search", searchBlogs)
+router.get("/", getAllBlogs)
+router.get("/:id", getBlogById)
 
-// Authenticated
-router.route("/").post(verifyJWT, upload.array("images", 10), createBlog);
-router.route("/:id/edit").put(verifyJWT, upload.array("images", 10), updateBlog)
-router.route("/:id").delete(verifyJWT, deleteBlog)
-
+// Authenticate
+router.post("/create-blog", verifyJWT, upload.array("images", 10), createBlog)
+router.put("/:id", verifyJWT, upload.array("images", 10), updateBlog)
+router.delete("/:id", verifyJWT, deleteBlog)
 
 
 export default router;

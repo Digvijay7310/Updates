@@ -49,11 +49,11 @@ CLOUDINARY_NAME=your-cloudinary-name
 CLOUDINARY_API_KEY=your-cloudinary-api-key
 CLOUDINARY_API_SECRET=your-cloudinary-api-secret
 
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=react or vite url
 
-ACCESS_TOKEN_SECRET=f43fert4dfge5tte5atwrt3q5tt
-ACCESS_TOKEN_EXPIRY=4h
+ACCESS_TOKEN_SECRET=your-access-token
+ACCESS_TOKEN_EXPIRY=expiry
 
-REFRESH_TOKEN_SECRET=rtgeageragreaggarwggeaggaw
-REFRESH_TOKEN_EXPIRY=1d
+REFRESH_TOKEN_SECRET=your-refresh-token
+REFRESH_TOKEN_EXPIRY=expiry
 
