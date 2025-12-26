@@ -9,18 +9,16 @@ const BlogSchema = mongoose.Schema({
     title: {
         type: String,
         min: 3,
-        maxLength: 150,
         required: true,
     },
     description: {
         type: String,
         min: 3,
-        maxLength: 200,
         required: true,
     },
     content: {
         type: String,
-        min: 200,
+        max: 200,
         required: true,
     },
     likes: {

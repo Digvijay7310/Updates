@@ -1,55 +1,100 @@
-import { useAuth } from "../context/AuthContext";
+// src/pages/UpdateProfile.jsx
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
+import { useAuth } from "../context/AuthContext";
 
 export default function UpdateProfile() {
   const { user, login } = useAuth();
 
-  const [fullName, setFullName] = useState(user.fullName);
-  const [description, setDescription] = useState(user.description);
+  const [fullName, setFullName] = useState(user.fullName || "");
+  const [description, setDescription] = useState(user.description || "");
   const [avatar, setAvatar] = useState(null);
+  const [preview, setPreview] = useState(user.avatar || null);
+  const [loading, setLoading] = useState(false);
 
-  const update = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const fd = new FormData();
-    fd.append("fullName", fullName);
-    fd.append("description", description);
-    if (avatar) fd.append("avatar", avatar);
+    try {
+      const fd = new FormData();
+      fd.append("fullName", fullName);
+      fd.append("description", description);
+      if (avatar) fd.append("avatar", avatar);
 
-    const res = await axiosInstance.put("/users/update", fd);
-    login(res.data.data.user);
+      const res = await axiosInstance.put("/users/update-profile", fd);
+      login(res.data.data.user); // Update auth context with new user data
+      alert("Profile updated successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update profile.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    alert("Updated");
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    setAvatar(file);
+    if (file) {
+      setPreview(URL.createObjectURL(file)); // Show preview
+    }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">Update Profile</h1>
-      <form onSubmit={update} className="bg-white shadow rounded p-6">
+    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold mb-6 text-center text-orange-600">
+        Update Profile
+      </h2>
 
+      <form onSubmit={submit} className="flex flex-col gap-4">
+        {/* Avatar Preview */}
+        {preview && (
+          <img
+            src={preview}
+            alt="Avatar Preview"
+            className="w-24 h-24 rounded-full mx-auto object-cover"
+          />
+        )}
+
+        {/* Full Name */}
         <input
+          type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="w-full border p-2 mb-4"
           placeholder="Full Name"
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+          required
         />
 
+        {/* Description */}
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="w-full border p-2 mb-4"
-          placeholder="Description"
+          placeholder="Bio / Description"
+          rows={4}
+          className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
         />
 
+        {/* Avatar Upload */}
         <input
           type="file"
-          onChange={(e) => setAvatar(e.target.files[0])}
-          className="mb-4"
+          accept="image/*"
+          onChange={handleAvatarChange}
+          className="w-full"
         />
 
-        <button className="bg-orange-500 text-white px-4 py-2 rounded">
-          Save
+        {/* Submit Button */}
+        <button
+          type="submit"
+          disabled={loading}
+          className={`w-full py-3 rounded-lg text-white font-semibold transition ${
+            loading
+              ? "bg-orange-300 cursor-not-allowed"
+              : "bg-orange-500 hover:bg-orange-600"
+          }`}
+        >
+          {loading ? "Updating..." : "Save Changes"}
         </button>
       </form>
     </div>

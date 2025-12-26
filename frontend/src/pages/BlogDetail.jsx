@@ -1,3 +1,4 @@
+// src/pages/BlogDetail.jsx
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../utils/axiosInstance";
@@ -10,8 +11,7 @@ export default function BlogDetail() {
 
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -20,6 +20,7 @@ export default function BlogDetail() {
         setBlog(res.data.data);
       } catch (err) {
         console.error("Error fetching blog:", err);
+        setError("Failed to load blog. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -28,14 +29,12 @@ export default function BlogDetail() {
     fetchBlog();
   }, [id]);
 
-  if (loading)
-    return <h2 className="text-center mt-10 text-xl">Loading...</h2>;
+  if (loading) return <h2 className="text-center mt-10 text-xl">Loading...</h2>;
+  if (error) return <h2 className="text-center mt-10 text-xl text-red-600">{error}</h2>;
+  if (!blog) return <h2 className="text-center mt-10 text-xl">Blog not found</h2>;
 
-  if (!blog)
-    return <h2 className="text-center mt-10 text-xl">Blog not found</h2>;
-
-  // Check if current user is the author
-  const isAuthor = user && blog.author && user.id === blog.author.id;
+  // Check ownership
+  const isAuthor = user && blog.author && user._id === blog.author._id;
 
   return (
     <div className="max-w-4xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -48,17 +47,18 @@ export default function BlogDetail() {
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-6 text-center sm:text-left">
         <img
           src={blog.author?.avatar}
-          alt="avatar"
+          alt={blog.author?.fullName}
           className="w-12 h-12 rounded-full"
         />
         <div>
           <h3 className="font-semibold">{blog.author?.fullName}</h3>
           <p className="text-sm text-gray-600">{blog.author?.email}</p>
         </div>
+
         {isAuthor && (
           <button
-            className="ml-auto mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md transition-all duration-200"
-            onClick={() => navigate(`/blogs/${blog.id}`)}
+            className="ml-auto mt-2 sm:mt-0 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
+            onClick={() => navigate(`/blogs/${blog._id}/edit`)}
           >
             Edit Blog
           </button>
@@ -68,7 +68,7 @@ export default function BlogDetail() {
       {/* Blog Description */}
       <p className="text-lg text-gray-700 mb-6">{blog.description}</p>
 
-      {/* Blog Image */}
+      {/* Blog Images */}
       {blog.images?.length > 0 && (
         <img
           src={blog.images[0]}
@@ -83,14 +83,10 @@ export default function BlogDetail() {
         dangerouslySetInnerHTML={{ __html: blog.content }}
       />
 
-      {/* Created & Updated Dates */}
+      {/* Dates */}
       <div className="text-sm text-gray-500 mb-4 flex flex-col sm:flex-row gap-4">
-        <span>
-          Created: {new Date(blog.createdAt).toLocaleString()}
-        </span>
-        <span>
-          Updated: {new Date(blog.updatedAt).toLocaleString()}
-        </span>
+        <span>Created: {new Date(blog.createdAt).toLocaleString()}</span>
+        <span>Updated: {new Date(blog.updatedAt).toLocaleString()}</span>
       </div>
 
       {/* Keywords */}

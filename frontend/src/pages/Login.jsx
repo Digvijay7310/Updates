@@ -1,3 +1,4 @@
+// src/pages/Login.jsx
 import { useState } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { useAuth } from "../context/AuthContext";
@@ -11,55 +12,48 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const res = await axiosInstance.post("/users/login", { email, password });
+      const res = await axiosInstance.post("/users/login", {
+        email,
+        password,
+      });
+
       login(res.data.data.user);
       navigate("/");
     } catch (err) {
-      console.error(err);
-      alert("Login failed");
+      alert(err.response?.data?.message || "Login failed");
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh] px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white shadow-lg rounded-xl p-6 border"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+    <div className="min-h-screen flex items-center justify-center">
+      <form onSubmit={handleSubmit} className="w-96 p-6 shadow rounded">
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
 
         <input
           type="email"
+          className="w-full border p-2 mb-3"
           placeholder="Email"
-          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}     // 👈 IMPORTANT
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
         <input
           type="password"
+          className="w-full border p-2 mb-3"
           placeholder="Password"
-          className="w-full p-3 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}  // 👈 IMPORTANT
+          onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <button
-          type="submit"
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg"
-        >
+        <button className="w-full bg-orange-500 text-white py-2 rounded">
           Login
         </button>
 
-        <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <Link to="/register" className="text-orange-500">
-            Register
-          </Link>
+        <p className="text-center mt-3">
+          No account? <Link to="/register" className="text-orange-500">Register</Link>
         </p>
       </form>
     </div>
